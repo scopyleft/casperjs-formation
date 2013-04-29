@@ -26,34 +26,7 @@
     <link rel="stylesheet" href="vendor/deck.js/themes/style/web-2.0.css">
 
     <link rel="stylesheet" href="vendor/highlight/styles/default.css">
-
-    <style>
-    .deck-container p code {
-        background: #dde;
-        padding: 0 .3em;
-        border-radius: .2em;
-    }
-
-    pre code {
-        background: none;
-    }
-
-    .code-small pre code {
-        font-size: 80%;
-    }
-
-    .code-smaller pre code {
-        font-size: 60%;
-    }
-
-    .deck-container .slide code {
-        color: #446;
-    }
-
-    .deck-container pre, .deck-container code, .deck-container kbd, .deck-container samp {
-        font-family: Consolas, Monaco, "Courrier New", monospace;
-    }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 
     <script src="vendor/modernizr.custom.js"></script>
 </head>
@@ -117,7 +90,10 @@
 ## Confusions fréquentes
 
 - CasperJS n'est **pas** un package node.js
-- PhantomJS (et QtWebkit) n'utilisent **pas** le moteur V8
+- PhantomJS (et QtWebkit) n'utilisent **pas** le moteur V8 de Google, mais
+  [JavaScriptCore], le moteur natif de WebKit
+
+[JavaScriptCore]: http://trac.webkit.org/wiki/JavaScriptCore
 </section>
 
 <section class="slide" id="installation">
@@ -369,6 +345,13 @@ Comme [pour PhantomJS](https://github.com/ariya/phantomjs/wiki/Quick-Start#code-
 sérializables** de l'environnement JavaScript de la page à l'environnement
 d'exécution CasperJS.
 
+**Astuce :** considérez une valeur comme sérializable quand elle l'est au moyen
+de :
+
+```js
+obj === JSON.parse(JSON.stringify(obj)) // true
+```
+
 [Casper#evaluate()]: http://casperjs.org/api.html#casper.evaluate
 </section>
 
@@ -561,6 +544,7 @@ sous-commande particulière, `casperjs test` :
 
 Testons la recherche google :
 
+    // exercices/3/1.js
     casper.test.begin('Google search tests', 4, function suite(test) {
         casper.start("http://www.google.fr/", function() {
             test.assertTitle("Google", "google homepage title is the one expected");
@@ -588,7 +572,17 @@ Testons la recherche google :
 <section class="slide" id="">
 ## Execution
 
+Vous devriez obtenir quelque chose d'approchant :
+
 ![](img/test-results.png)
+</section>
+
+<section class="slide" id="">
+## Execution
+
+En faisant volontairement échouer le test :
+
+![](img/test-results-fail.png)
 </section>
 
 <section class="slide" id="">
@@ -606,7 +600,7 @@ Nous démarrons un nouveau test en spécifiant :
 [Tester]: http://docs.casperjs.org/en/latest/modules/tester.html
 </section>
 
-<section class="slide" id="">
+<section class="slide code-small" id="">
 ## Que s'est-il passé ?
 
         casper.start("http://www.google.fr/", function() {
@@ -625,7 +619,7 @@ Nous ouvrons la page d'accueil de Google, puis :
    sa soumission
 </section>
 
-<section class="slide" id="">
+<section class="slide code-small" id="">
 ## Que s'est-il passé ?
 
         casper.waitFor(function() {
@@ -673,7 +667,7 @@ continue] avec un serveur comme [Jenkins].
 [Jenkins]: https://fr.wikipedia.org/wiki/Jenkins_(informatique)
 </section>
 
-<section class="slide" id="">
+<section class="slide code-smaller" id="">
 ## Export au format XUnit
 
 Le fichier `log.xml` contient alors :
@@ -717,6 +711,12 @@ Le fichier `log.xml` contient alors :
     <datalist id="goto-datalist"></datalist>
     <input type="submit" value="Go">
 </form>
+
+<footer>
+    <p>Formation CasperJS par <a href="http://scopyleft.fr/">scopyleft</a>
+    | <a href="https://github.com/scopyleft/casperjs-formation">code source</a>
+    | <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/fr/">licence</a></p>
+</footer>
 
 <!-- deck.hash snippet -->
 <a href="." title="Permalink to this slide" class="deck-permalink">#</a>
