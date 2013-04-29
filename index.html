@@ -300,6 +300,17 @@ donc directement la méthode `Array#map` à notre objet `NodeList` au moyen de
 `Function#call`.*
 </section>
 
+<section class="slide" id="">
+## Que s'est-il passé ?
+
+Enfin, nous lançons l'exécution des opérations et affichons le contenu de notre
+variable `links` :
+
+    casper.run(function() {
+        this.echo(links).exit();
+    });
+</section>
+
 <section class="slide" id="note-evaluate">
 ## Notes sur `Casper#evaluate()`
 
