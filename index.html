@@ -34,9 +34,19 @@
     pre code {
         background: none;
     }
+
+    .code-small pre code {
+        font-size: 80%;
+    }
+
+    .code-smaller pre code {
+        font-size: 60%;
+    }
+
     .deck-container .slide code {
         color: #446;
     }
+
     .deck-container pre, .deck-container code, .deck-container kbd, .deck-container samp {
         font-family: Consolas, Monaco, "Courrier New", monospace;
     }
@@ -231,7 +241,7 @@ Enfin, on lance le traitement de l'ensemble des opérations programmées :
 un script figé.*
 </section>
 
-<section class="slide" id="">
+<section class="slide code-small" id="">
 ## Extraction des liens
 
     // exercices/1/2.js
@@ -477,7 +487,7 @@ Enfin, nous affichons la liste des résultats que nous avons stocké :
 - garantir contre les régressions éventuelles
 
 Le framework de test fonctionnel a été refondu en version 1.1, et propose
-désormais des fonctionnalités avancés de reporting, les méthodes `setUp()` et
+désormais des fonctionnalités avancées de reporting, les méthodes `setUp()` et
 `tearDown()` et propose une architecture plus découplée.
 
 La documentation de la version de développement est située à l'adresse
@@ -505,28 +515,99 @@ sous-commande particulière, `casperjs test` :
     $ casperjs test mytest.js
 </section>
 
+<section class="slide code-smaller" id="">
+## Premier script de test
+
+Testons la recherche google :
+
+    casper.test.begin('Google search retrieves 10 or more results', 5, function suite(test) {
+        casper.start("http://www.google.fr/", function() {
+            test.assertTitle("Google", "google homepage title is the one expected");
+            test.assertExists('form[action="/search"]', "main form is found");
+            this.fill('form[action="/search"]', {
+                q: "casperjs"
+            }, true);
+        });
+
+        casper.then(function() {
+            test.assertTitle("casperjs - Recherche Google", "google title is ok");
+            test.assertUrlMatch(/q=casperjs/, "search term has been submitted");
+            test.assertEval(function() {
+                return __utils__.findAll("h3.r").length >= 10;
+            }, "google search for \"casperjs\" retrieves 10 or more results");
+        });
+
+        casper.run(function() {
+            test.done();
+        });
+    });
+</section>
+
 <section class="slide" id="">
+## Execution
+
+![](img/test-results.png)
+</section>
+
+<section class="slide" id="">
+## Que s'est-il passé ?
+
+    casper.test.begin('Google search retrieves 10 or more results', 5, function suite(test) {
+
+Nous démarrons un nouveau test en lui déclarant :
+
+1. son nom
+2. le nombre d'assertions attendues
+3. une fonction définissant les assertions
 
 </section>
 
 <section class="slide" id="">
+## Que s'est-il passé ?
 
+        casper.start("http://www.google.fr/", function() {
+            test.assertTitle("Google", "google homepage title is the one expected");
+            test.assertExists('form[action="/search"]', "main form is found");
+            this.fill('form[action="/search"]', {
+                q: "casperjs"
+            }, true);
+        });
+
+Nous ouvrons la page d'accueil de Google, puis :
+
+- vérifions le titre de la page
+- vérifions que le formulaire de recherche existe
+- remplissons le champ de recherche avec le mot-clé *casperjs*, ce qui va
+  déclencher sa soumission et exécuter une requête HTTP
 </section>
 
 <section class="slide" id="">
+## Que s'est-il passé ?
 
+        casper.then(function() {
+            test.assertTitle("casperjs - Recherche Google", "google title is ok");
+            test.assertUrlMatch(/q=casperjs/, "search term has been submitted");
+            test.assertEval(function() {
+                return __utils__.findAll("h3.r").length >= 10;
+            }, "google search for \"casperjs\" retrieves 10 or more results");
+        });
+
+Une fois la réponse HTTP reçue, nous vérifions :
+
+1. que le titre de la page correspond à nos attentes
+2. que l'URL de la page a changé conformément
+3. que le nombre de résultats de recherche est supérieur à 10
 </section>
 
 <section class="slide" id="">
+## Que s'est-il passé ?
 
-</section>
+        casper.run(function() {
+            test.done();
+        });
 
-<section class="slide" id="">
-
-</section>
-
-<section class="slide" id="">
-
+Enfin, nous executons les opérations définies et appelons la méthode
+`Tester#done()` afin de signifier que le test est terminé.
 </section>
 
 <section class="slide" id="">
