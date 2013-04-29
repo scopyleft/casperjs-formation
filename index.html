@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>CasperJS</title>
+
+    <meta name="description" content="A jQuery library for modern HTML presentations">
+    <meta name="author" content="Caleb Troughton">
+    <meta name="viewport" content="width=1024, user-scalable=no">
+
+    <!-- Core and extension CSS files -->
+    <link rel="stylesheet" href="vendor/deck.js/core/deck.core.css">
+    <link rel="stylesheet" href="vendor/deck.js/extensions/goto/deck.goto.css">
+    <link rel="stylesheet" href="vendor/deck.js/extensions/menu/deck.menu.css">
+    <link rel="stylesheet" href="vendor/deck.js/extensions/navigation/deck.navigation.css">
+    <link rel="stylesheet" href="vendor/deck.js/extensions/status/deck.status.css">
+    <link rel="stylesheet" href="vendor/deck.js/extensions/hash/deck.hash.css">
+    <link rel="stylesheet" href="vendor/deck.js/extensions/scale/deck.scale.css">
+
+    <!-- Style theme. More available in /themes/style/ or create your own. -->
+    <link rel="stylesheet" href="vendor/deck.js/themes/style/web-2.0.css">
+
+    <!-- Transition theme. More available in /themes/transition/ or create your own. -->
+    <link rel="stylesheet" href="vendor/deck.js/themes/transition/horizontal-slide.css">
+
+    <link rel="stylesheet" href="vendor/highlight/styles/default.css">
+
+    <style>
+    pre code {
+        background: none;
+    }
+    .deck-container .slide code {
+        color: #446;
+    }
+    .deck-container pre, .deck-container code, .deck-container kbd, .deck-container samp {
+        font-family: Consolas, Monaco, "Courrier New", monospace;
+    }
+    </style>
+
+    <script src="vendor/modernizr.custom.js"></script>
+</head>
+
+<body class="deck-container">
+
+<!-- Begin slides -->
+<section class="slide" id="home">
+# Formation CasperJS
+</section>
+
+<section class="slide" id="intro">
+## CasperJS
+
+- navigateur headless
+- basé sur [PhantomJS]
+- moteur [WebKit] ([QtWebKit])
+- moteur JavaScript Qt
+
+[PhantomJS]: http://phantomjs.org/
+[WebKit]: XXX
+[QtWebKit]: XXX
+</section>
+
+<section class="slide" id="usages-principaux">
+## Usages principaux
+
+- *Scraping*
+- Tests fonctionnels
+</section>
+
+<section class="slide" id="scraping-enjeux">
+## Scraping
+
+- récupérer des informations depuis des pages web
+- difficultés:
+  * pages et webapps utilisant massivement JavaScript
+  * navigation et interactions
+  * automatisation
+</section>
+
+<section class="slide" id="tests-fonctionnels-enjeux">
+## Tests fonctionnels
+
+- tester la conformité du comportement d'une application Web
+- difficultés:
+  * pages et webapps utilisant massivement JavaScript
+  * navigation et interactions
+  * automatisation
+</section>
+
+<section class="slide no-md" id="casperjs-definition">
+<h2>CasperJS</h2>
+<blockquote>
+    <q>
+        permet de scripter des scenarios automatisés de navigation et d'interaction
+        avec des applications Web utilisant massivement JavaScript
+    </q>
+</blockquote>
+</section>
+
+<section class="slide" id="confusions-frequentes">
+## Confusions fréquentes
+
+- CasperJS n'est **pas** un package node.js
+- PhantomJS (et QtWebkit) n'utilisent **pas** le moteur V8
+</section>
+
+<section class="slide" id="installation">
+# Installation
+</section>
+
+<section class="slide" id="installation-osx">
+## Installation (OSX)
+
+    $ brew install casperjs
+    $ casperjs --version
+    1.0.2
+</section>
+
+<section class="slide" id="installation-linux">
+## Installation (Linux)
+
+    $ git clone https://github.com/n1k0/casperjs.git
+    $ cd casperjs
+    $ git co v1.0.2
+    $ casperjs --version
+    1.0.2
+
+**Note:** des paquets sont disponibles pour archlinux et autres distributions
+</section>
+
+<section class="slide" id="installation-windows">
+## Installation (Windows)
+
+- Téléchargez la version stable sur github
+- Ajoutez `;C:\casperjs\batchbin` à votre variable d'environnement `PATH`
+
+Vous pouvez désormais utiliser la commande `casperjs.bat` :
+
+    C:> casperjs.bat myscript.js
+
+**Note:** le support de Windows est assuré par la communauté de contributeurs
+CasperJS.
+</section>
+
+<section class="slide" id="scraping">
+# Scraping
+</section>
+
+<section class="slide" id="scraping-definition">
+<h2>Scraping</h2>
+<blockquote>
+    <q>
+        Le Web scraping (parfois appelé Harvesting) est une technique d'extraction
+        du contenu de sites Web, via un script ou un programme, dans le but de le
+        transformer pour permettre son utilisation dans un autre contexte, par
+        exemple le référencement
+        <cite><a href="http://fr.wikipedia.org/wiki/Scraping">Wikipedia</a></cite>
+    </q>
+</blockquote>
+</section>
+
+<section class="slide" id="scraping-ex-1">
+## Scraping: exemple 1
+
+**Extraire tous les liens depuis la page `http://fr.wikipedia.org/wiki/Scraping`.**
+</section>
+
+<section class="slide">
+## Commençons doucement…
+
+    // exercices/1/1.js
+    var casper = require('casper').create();
+    casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+        this.debugHTML();
+    });
+    casper.run();
+
+### Lancer le script
+
+    $ casperjs exercices/1/1.js
+</section>
+
+<section class="slide">
+## Que s'est il passé ?
+
+On crée un object `casper` :
+
+    var casper = require('casper').create();
+
+*Notez l'utilisation du pattern module, comme dans node.js*
+</section>
+
+<section class="slide">
+## Que s'est il passé ?
+
+On lance le navigateur sur l'url :
+
+    casper.start('http://fr.wikipedia.org/wiki/Scraping');
+
+*Considérez la méthode `start()` comme l'ouverture d'un nouvel onglet et le
+chargement d'une url dans un navigateur classique.*
+</section>
+
+<section class="slide">
+## Que s'est il passé ?
+
+On définit le comportement à la réception de la réponse HTTP attendue ; ici, on
+affiche simplement le contenu HTML brut de la page :
+
+    casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+        this.debugHTML();
+    });
+
+*La méthode `debugHTML()` est très utile pour savoir exactement quel contenu
+HTML est utilisé dans la page conrrante.*
+</section>
+
+<section class="slide">
+## Que s'est il passé ?
+
+Enfin, on lance le traitement de l'ensemble des opérations programmées :
+
+    casper.run();
+
+*Une erreur fréquente des débutants est d'omettre l'appel à `run()`, résultant sur
+un script figé.*
+</section>
+
+<section class="slide" id="">
+## Extraction des liens
+
+    // exercices/1/2.js
+    var casper = require('casper').create();
+    var links = [];
+
+    casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+        links = this.evaluate(function() {
+            var nodes = document.querySelectorAll('a');
+            return [].map.call(nodes, function(node) {
+                return node.getAttribute('href');
+            });
+        });
+    });
+
+    casper.run(function() {
+      this.echo(links).exit();
+    });
+</section>
+
+<section class="slide" id="">
+## Hmm, WAT?
+
+- oui, ça fait toujours ça la première fois quand on est pas habitué
+- une grosse partie de la *magie* réside dans la méthode `evaluate()`
+- une grosse partie des problèmes rencontrés par les débutants aussi, d'ailleurs
+
+Regardons plus en détail ce qui s'est passé…
+</section>
+
+<section class="slide" id="">
+## Que s'est il passé ?
+
+Une fois la page Wikipedia ouverte, nous appelons la méthode `evaluate()` depuis
+le context casper afin de récupérer une valeur depuis le DOM de la page en
+question :
+
+    var links = [];
+
+    casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+        links = this.evaluate(function() {
+            // ce qui sera retourné ici sera affecté à la variable links
+        });
+    });
+
+</section>
+
+<section class="slide" id="">
+## Que s'est il passé ?
+
+Et que voulons-nous affecter à notre variable `links` ? La liste des liens
+hypertextes de la page courrante ; aussi nous commençons par récupérer la
+liste des éléments DOM correspondants :
+
+            var nodes = document.querySelectorAll('a');
+
+Que nous mappons afin d'en extraire le contenu de l'attribut `href` :
+
+            return [].map.call(nodes, function(node) {
+                return node.getAttribute('href');
+            });
+
+**Note:** *Nous ne pouvons pas directement mapper la liste d'éléments car le type
+`NodeList` n'implémente pas complètement le prototype `Array` ; nous appliquons
+donc directement la méthode `Array#map` à notre objet `NodeList` au moyen de
+`Function#call`.*
+</section>
+
+<section class="slide" id="note-evaluate">
+## Notes sur `Casper#evaluate()`
+
+Pour évaluer du code dans le contexte de la page Web que vous scrapez, il faut
+utiliser la méthode [Casper#evaluate()].
+
+**Par sécurité, cette fonction est *sandboxée***,
+il n'y a aucun moyen pour le code qui lui est passé d'accéder aux objets et
+variables JavaScript en dehors du contexte de la page en question.
+
+Comme [pour PhantomJS](https://github.com/ariya/phantomjs/wiki/Quick-Start#code-evaluation),
+**l'utilisation du *sandboxing* implique de ne pouvoir transférer que des objets
+sérializables** de l'environnement JavaScript de la page à l'environnement
+d'exécution CasperJS.
+
+[Casper#evaluate()]: XXX
+</section>
+
+<section class="slide" id="">
+## Notes sur `Casper#evaluate()`
+
+Ceci fonctionnera :
+
+    var href = casper.evaluate(function() {
+        return document.querySelector('a').href; // String
+    });
+
+Ceci ne fonctionnera pas :
+
+    var href = casper.evaluate(function() {
+        return document.querySelector('a'); // HTMLElement, non serializable
+    });
+</section>
+
+<section class="slide" id="">
+## Un peu plus dur…
+
+Vous connaissez sans doute la fonctionnalité de Google *Suggest*, qui permet de
+proposer des suggestions pour un terme de recherche particulier :
+
+![](http://cl.ly/image/2S1O302e0G1q/Capture%20d%E2%80%99%C3%A9cran%202013-04-28%20%C3%A0%2019.20.35.png)
+
+Allons scraper tout ça pour rigoler un coup (ou pas)
+</section>
+
+<section class="slide" id="">
+## Un peu plus dur…
+
+L'idée est de développer un script permettant, pour un terme de recherche passé,
+d'afficher la liste des suggestions correspondantes depuis la ligne de commande :
+
+    $ casperjs google-suggest.js pourquoi
+    pourquoi la guerre au mali
+    pourquoi pas coline
+    pourquoi je me suis marié
+    pourquoi le ciel est bleu
+    pourquoi la france intervient au mali
+    pourquoi je me suis marié aussi
+    pourquoi j'ai mangé mon père
+    pourquoi on baille
+    pourquoi le pape démissionne
+</section>
+
+<section class="slide" id="">
+## Quelques indices
+
+Certains outils peuvent également s'avérer utiles :
+
+- le module [cli] vous permet facilement de récupérer les arguments passés en
+  ligne de commande ;
+- [Casper#sendKeys()] permet de simuler la saisie d'un texte sur un champ de
+  formulaire ;
+- [Casper#waitFor] permet de déferrer l'execution de l'étape suivante au moment
+  où certaines conditions sont réunies ;
+- [Casper#fetchText()] permet de récupérer le contenu textuel d'un élement
+  correspondant à un selecteur donné.
+
+[cli]: http://XXX
+[Casper#fetchText()]: http://XXX
+[Casper#sendKeys()]: http://XXX
+[Casper#waitFor]: http://XXX
+</section>
+
+<section class="slide" id="">
+# C'est à vous !
+</section>
+
+<section class="slide" id="">
+## Récupérer un argument
+
+Une fois l'objet `casper` créé, il dispose d'un attribut `cli` qui permet de
+récupérer les informations passés en ligne de commande ; ici, nous souhaitons
+récupérer le premier argument :
+
+    var casper = require('casper').create();
+    var word = casper.cli.get(0);
+</section>
+
+<section class="slide" id="">
+## Remplir un champ
+
+La méthode [Casper#sendKeys()] permet de simuler la saisie d'un texte sur un
+champ de formulaire ; Nous allons saisir le mot passé en argument du script dans
+la zone de recherche google :
+
+    casper.start('http://www.google.com/', function() {
+        this.sendKeys('input[name=q]', word);
+    });
+
+[Casper#sendKeys()]: http://XXX
+</section>
+
+<section class="slide" id="">
+## Attendre l'autocomplétion
+
+L'affichage des suggestions de recherche Google étant asynchrone, nous utilisons
+la méthode [Casper#waitFor] afin d'attendre que le sélecteur correspondant
+existe et commence par le mot que nous recherchons ; ici, le sélecteur CSS3
+correspondant est `.gsq_a table span` :
+
+    casper.waitFor(function() {
+      return this.fetchText('.gsq_a table span').indexOf(word) === 0
+    }, function() {
+        // la boite d'autocomplétion est disponible
+        // récupération des suggestions
+    });
+
+[Casper#waitFor]: xxx
+</section>
+
+<section class="slide" id="">
+## Récupérer les suggestions
+
+Une fois la zone affichant les suggestions est visible, nous pouvons procéder à
+la récupération des textes pour chaque élément de la liste correspondante :
+
+        suggestions = this.evaluate(function() {
+            var nodes = document.querySelectorAll('.gsq_a table span');
+            return [].map.call(nodes, function(node){
+                return node.textContent;
+            });
+        });
+</section>
+
+<section class="slide" id="">
+## Affichage des suggestions
+
+Enfin, nous affichons la liste des résultats que nous avons stocké :
+
+    casper.run(function() {
+        this.echo(suggestions.join('\n')).exit();
+    });
+</section>
+
+<section class="slide" id="tests-fonctionnels">
+# Tests fonctionnels
+</section>
+
+<section class="slide" id="">
+## Tests fonctionnels
+
+- utiles pour garantir l'intégrité fonctionnelle d'une application
+- utiles pour valider un comportement attendu
+- garantir contre les régressions éventuelles
+
+Le framework de test fonctionnel a été refondu en version 1.1, et propose
+désormais des fonctionnalités avancés de reporting, les méthodes `setUp()` et
+`tearDown()` et propose une architecture plus découplée.
+
+La documentation de la version de développement est située à l'adresse
+[docs.casperjs.org](https://docs.casperjs.org/).
+</section>
+
+<section class="slide" id="">
+## Installation de la version 1.1-DEV
+
+Installer la version 1.1 de développement :
+
+    $ git clone https://github.com/n1k0/casperjs.git
+    $ cd casperjs
+    $ git co master
+    $ casperjs --version
+    1.1.0-DEV
+</section>
+
+<section class="slide" id="">
+## La sous-commande `casperjs test`
+
+L'utilisation des fonctionnalités de test implique l'utilisation d'une
+sous-commande particulière, `casperjs test` :
+
+    $ casperjs test mytest.js
+</section>
+
+<section class="slide" id="">
+
+</section>
+
+<section class="slide" id="">
+
+</section>
+
+<section class="slide" id="">
+
+</section>
+
+<section class="slide" id="">
+
+</section>
+
+<section class="slide" id="">
+
+</section>
+
+<section class="slide" id="">
+
+</section>
+
+<section class="slide" id="">
+
+</section>
+
+<!-- deck.navigation snippet -->
+<!--
+<a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+<a href="#" class="deck-next-link" title="Next">&#8594;</a>
+-->
+
+<!-- deck.status snippet -->
+<p class="deck-status">
+    <span class="deck-status-current"></span>
+    /
+    <span class="deck-status-total"></span>
+</p>
+
+<!-- deck.goto snippet -->
+<form action="." method="get" class="goto-form">
+    <label for="goto-slide">Go to slide:</label>
+    <input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
+    <datalist id="goto-datalist"></datalist>
+    <input type="submit" value="Go">
+</form>
+
+<!-- deck.hash snippet -->
+<a href="." title="Permalink to this slide" class="deck-permalink">#</a>
+
+<!-- Grab CDN jQuery, with a protocol relative URL; fall back to local if offline -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="vendor/jquery-1.7.2.min.js"><\/script>')</script>
+
+<!-- Deck Core and extensions -->
+<script src="vendor/deck.js/core/deck.core.js"></script>
+<script src="vendor/deck.js/extensions/hash/deck.hash.js"></script>
+<script src="vendor/deck.js/extensions/menu/deck.menu.js"></script>
+<script src="vendor/deck.js/extensions/goto/deck.goto.js"></script>
+<script src="vendor/deck.js/extensions/status/deck.status.js"></script>
+<script src="vendor/deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="vendor/deck.js/extensions/scale/deck.scale.js"></script>
+<script src="vendor/deck.js/extensions/markdown/Markdown.Converter.js"></script>
+<script src="vendor/deck.js/extensions/markdown/deck.markdown.js"></script>
+<script src="vendor/highlight/highlight.pack.js"></script>
+
+<!-- Initialize the deck -->
+<script>
+$(function() {
+    $.deck('.slide');
+    setTimeout(function() {
+        $('pre code').each(function(i, e) {
+            //e.innerHTML = e.textContent; // force plain text
+            hljs.highlightBlock(e);
+        });
+    }, 300);
+});
+</script>
+
+</body>
+</html>
