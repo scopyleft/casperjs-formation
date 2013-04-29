@@ -9,8 +9,8 @@
 
     <title>CasperJS</title>
 
-    <meta name="description" content="A jQuery library for modern HTML presentations">
-    <meta name="author" content="Caleb Troughton">
+    <meta name="description" content="Formation CasperJS">
+    <meta name="author" content="Nicolas Perriault">
     <meta name="viewport" content="width=1024, user-scalable=no">
 
     <!-- Core and extension CSS files -->
@@ -28,6 +28,12 @@
     <link rel="stylesheet" href="vendor/highlight/styles/default.css">
 
     <style>
+    .deck-container p code {
+        background: #dde;
+        padding: 0 .3em;
+        border-radius: .2em;
+    }
+
     pre code {
         background: none;
     }
@@ -42,6 +48,10 @@
 
     .deck-container .slide code {
         color: #446;
+    }
+
+    .deck-container h1 {
+        margin-top: 2em;
     }
 
     .deck-container pre, .deck-container code, .deck-container kbd, .deck-container samp {
@@ -68,8 +78,8 @@
 - moteur JavaScript Qt
 
 [PhantomJS]: http://phantomjs.org/
-[WebKit]: XXX
-[QtWebKit]: XXX
+[WebKit]: http://webkit.org/
+[QtWebKit]: https://qt-project.org/wiki/QtWebKit
 </section>
 
 <section class="slide" id="usages-principaux">
@@ -100,13 +110,11 @@
 </section>
 
 <section class="slide no-md" id="casperjs-definition">
-<h2>CasperJS</h2>
-<blockquote>
-    <q>
-        permet de scripter des scenarios automatisés de navigation et d'interaction
-        avec des applications Web utilisant massivement JavaScript
-    </q>
-</blockquote>
+## CasperJS
+
+> permet de scripter des scenarios automatisés de navigation et d'interaction
+> avec des applications Web utilisant massivement JavaScript
+
 </section>
 
 <section class="slide" id="confusions-frequentes">
@@ -159,26 +167,26 @@ CasperJS.
 </section>
 
 <section class="slide" id="scraping-definition">
-<h2>Scraping</h2>
-<blockquote>
-    <q>
-        Le Web scraping (parfois appelé Harvesting) est une technique d'extraction
-        du contenu de sites Web, via un script ou un programme, dans le but de le
-        transformer pour permettre son utilisation dans un autre contexte, par
-        exemple le référencement
-        <cite><a href="http://fr.wikipedia.org/wiki/Scraping">Wikipedia</a></cite>
-    </q>
-</blockquote>
+## Scraping
+
+> Le Web scraping (parfois appelé Harvesting) est une technique d'extraction
+> du contenu de sites Web, via un script ou un programme, dans le but de le
+> transformer pour permettre son utilisation dans un autre contexte, par
+> exemple le référencement
+
+— [Wikipedia](http://fr.wikipedia.org/wiki/Scraping)
 </section>
 
 <section class="slide" id="scraping-ex-1">
 ## Scraping: exemple 1
 
-**Extraire tous les liens depuis la page `http://fr.wikipedia.org/wiki/Scraping`.**
+**Extraire tous les liens depuis la page [fr.wikipedia.org/wiki/Scraping](http://fr.wikipedia.org/wiki/Scraping).**
 </section>
 
 <section class="slide">
 ## Commençons doucement…
+
+Créer un fichier `exercices/1/1.js` :
 
     // exercices/1/1.js
     var casper = require('casper').create();
@@ -187,7 +195,7 @@ CasperJS.
     });
     casper.run();
 
-### Lancer le script
+Lancer le script :
 
     $ casperjs exercices/1/1.js
 </section>
@@ -238,6 +246,38 @@ Enfin, on lance le traitement de l'ensemble des opérations programmées :
 un script figé.*
 </section>
 
+<section class="slide">
+## Asynchronicité
+
+On pourrait aussi écrire :
+
+    var casper = require('casper').create();
+
+    casper.start('http://fr.wikipedia.org/wiki/Scraping');
+
+    casper.then(function() {
+        this.debugHTML();
+    });
+
+    casper.run();
+</section>
+
+<section class="slide">
+## Asynchronicité
+
+Ou encore :
+
+    require('casper')
+        .create()
+        .start('http://fr.wikipedia.org/wiki/Scraping')
+        .then(function() {
+            this.debugHTML();
+        })
+        .run();
+
+Plus une affaire de goûts et de couleurs qu'autre chose…
+</section>
+
 <section class="slide code-small" id="">
 ## Extraction des liens
 
@@ -255,7 +295,7 @@ un script figé.*
     });
 
     casper.run(function() {
-      this.echo(links).exit();
+        this.echo(links).exit();
     });
 </section>
 
@@ -333,7 +373,7 @@ Comme [pour PhantomJS](https://github.com/ariya/phantomjs/wiki/Quick-Start#code-
 sérializables** de l'environnement JavaScript de la page à l'environnement
 d'exécution CasperJS.
 
-[Casper#evaluate()]: XXX
+[Casper#evaluate()]: http://casperjs.org/api.html#casper.evaluate
 </section>
 
 <section class="slide" id="">
@@ -350,6 +390,14 @@ Ceci ne fonctionnera pas :
     var href = casper.evaluate(function() {
         return document.querySelector('a'); // HTMLElement, non serializable
     });
+</section>
+
+<section class="slide" id="">
+## Notes sur `Casper#evaluate()`
+
+Ce diagramme illustre le principe d'étanchéïté entre les deux environnements :
+
+![](img/evaluate-diagram.png)
 </section>
 
 <section class="slide" id="">
@@ -395,10 +443,10 @@ Certains outils peuvent également s'avérer utiles :
 - [Casper#fetchText()] permet de récupérer le contenu textuel d'un élement
   correspondant à un selecteur donné.
 
-[cli]: http://XXX
-[Casper#fetchText()]: http://XXX
-[Casper#sendKeys()]: http://XXX
-[Casper#waitFor]: http://XXX
+[cli]: http://casperjs.org/cli.html
+[Casper#fetchText()]: http://casperjs.org/api.html#casper.fetchText
+[Casper#sendKeys()]: http://casperjs.org/api.html#casper.sendKeys
+[Casper#waitFor]: http://casperjs.org/api.html#casper.waitFor
 </section>
 
 <section class="slide" id="">
@@ -427,7 +475,7 @@ la zone de recherche google :
         this.sendKeys('input[name=q]', word);
     });
 
-[Casper#sendKeys()]: http://XXX
+[Casper#sendKeys()]: http://casperjs.org/api.html#casper.sendKeys
 </section>
 
 <section class="slide" id="">
@@ -445,7 +493,7 @@ correspondant est `.gsq_a table span` :
         // récupération des suggestions
     });
 
-[Casper#waitFor]: xxx
+[Casper#waitFor]: http://casperjs.org/api.html#casper.waitFor
 </section>
 
 <section class="slide" id="">
@@ -517,7 +565,7 @@ sous-commande particulière, `casperjs test` :
 
 Testons la recherche google :
 
-    casper.test.begin('Google search retrieves 10 or more results', 5, function suite(test) {
+    casper.test.begin('Google search tests', 4, function suite(test) {
         casper.start("http://www.google.fr/", function() {
             test.assertTitle("Google", "google homepage title is the one expected");
             test.assertExists('form[action="/search"]', "main form is found");
@@ -526,11 +574,12 @@ Testons la recherche google :
             }, true);
         });
 
-        casper.then(function() {
-            test.assertTitle("casperjs - Recherche Google", "google title is ok");
+        casper.waitFor(function() {
+            return this.getTitle() === "casperjs - Recherche Google";
+        }, function() {
             test.assertUrlMatch(/q=casperjs/, "search term has been submitted");
             test.assertEval(function() {
-                return __utils__.findAll("h3.r").length >= 10;
+                return document.querySelectorAll("h3.r").length >= 10;
             }, "google search for \"casperjs\" retrieves 10 or more results");
         });
 
@@ -549,14 +598,16 @@ Testons la recherche google :
 <section class="slide" id="">
 ## Que s'est-il passé ?
 
-    casper.test.begin('Google search retrieves 10 or more results', 5, function suite(test) {
+    casper.test.begin('Google search tests', 4, function suite(test) {
 
-Nous démarrons un nouveau test en lui déclarant :
+Nous démarrons un nouveau test en spécifiant :
 
-1. son nom
-2. le nombre d'assertions attendues
-3. une fonction définissant les assertions
+1. son nom, ici *Google search tests*
+2. le nombre d'assertions attendues, ici *4*
+3. une fonction définissant les assertions à executer; notez l'argument `test`
+   contenant une référence à l'objet [Tester].
 
+[Tester]: http://docs.casperjs.org/en/latest/modules/tester.html
 </section>
 
 <section class="slide" id="">
@@ -572,28 +623,28 @@ Nous démarrons un nouveau test en lui déclarant :
 
 Nous ouvrons la page d'accueil de Google, puis :
 
-- vérifions le titre de la page
-- vérifions que le formulaire de recherche existe
-- remplissons le champ de recherche avec le mot-clé *casperjs*, ce qui va
-  déclencher sa soumission et exécuter une requête HTTP
+1. vérifions le titre de la page (le contenu de sa balise `&lt;title&gt;`)
+2. vérifions que le formulaire de recherche existe, à partir d'un sélecteur CSS3
+3. remplissons le champ de recherche avec le mot-clé *casperjs* et déclenchons
+   sa soumission
 </section>
 
 <section class="slide" id="">
 ## Que s'est-il passé ?
 
-        casper.then(function() {
-            test.assertTitle("casperjs - Recherche Google", "google title is ok");
+        casper.waitFor(function() {
+            return this.getTitle() === "casperjs - Recherche Google";
+        }, function() {
             test.assertUrlMatch(/q=casperjs/, "search term has been submitted");
             test.assertEval(function() {
-                return __utils__.findAll("h3.r").length >= 10;
+                return document.querySelectorAll("h3.r").length >= 10;
             }, "google search for \"casperjs\" retrieves 10 or more results");
         });
 
-Une fois la réponse HTTP reçue, nous vérifions :
+Nous attendons que le titre de la page ait changé, puis nous vérifions :
 
-1. que le titre de la page correspond à nos attentes
-2. que l'URL de la page a changé conformément
-3. que le nombre de résultats de recherche est supérieur à 10
+1. que l'URL de la page a changé conformément
+2. que le nombre de résultats de recherche est supérieur à 10
 </section>
 
 <section class="slide" id="">
@@ -603,19 +654,58 @@ Une fois la réponse HTTP reçue, nous vérifions :
             test.done();
         });
 
-Enfin, nous executons les opérations définies et appelons la méthode
-`Tester#done()` afin de signifier que le test est terminé.
+Enfin, nous executons l'ensemble des opérations définies et appelons la méthode
+[Tester#done()] afin de signifier que le test est terminé.
+
+[Tester#done()]: http://docs.casperjs.org/en/latest/modules/tester.html#done
 </section>
 
 <section class="slide" id="">
+## Export au format XUnit
 
+L'option `--xunit` de la commande `casper test` permet d'exporter le résultat
+d'une suite de tests au format *XUnit* :
+
+```js
+$ casperjs test exercices/3/1.js --xunit=log.xml
+```
+
+Ces logs dont utiles dans la perspective de la pise en place d'[intégration
+continue] avec un serveur comme [Jenkins].
+
+[intégration continue]: https://fr.wikipedia.org/wiki/Int%C3%A9gration_continue
+[Jenkins]: https://fr.wikipedia.org/wiki/Jenkins_(informatique)
 </section>
 
-<!-- deck.navigation snippet -->
-<!--
-<a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
-<a href="#" class="deck-next-link" title="Next">&#8594;</a>
--->
+<section class="slide" id="">
+## Export au format XUnit
+
+Le fichier `log.xml` contient alors :
+
+```xml
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;testsuites duration="0.94"&gt;
+  &lt;testsuite errors="0" failures="0" name="Google search tests"
+             package="exercices/3/1" tests="4" time="0.94"
+             timestamp="2013-04-29T16:12:01.211Z"&gt;
+    &lt;testcase classname="exercices/3/1"
+              name="google homepage title is the one expected" time="0.55"/&gt;
+    &lt;testcase classname="exercices/3/1"
+              name="main form is found" time="0.001"/&gt;
+    &lt;testcase classname="exercices/3/1"
+              name="search term has been submitted" time="0.388"/&gt;
+    &lt;testcase classname="exercices/3/1"
+              name="google search for 'casperjs' retrieves 10 or more results"
+              time="0.001"/&gt;
+    &lt;system-out/&gt;
+  &lt;/testsuite&gt;
+&lt;/testsuites&gt;
+```
+</section>
+
+<section class="slide" id="">
+# Merci !
+</section>
 
 <!-- deck.status snippet -->
 <p class="deck-status">
@@ -647,20 +737,29 @@ Enfin, nous executons les opérations définies et appelons la méthode
 <script src="vendor/deck.js/extensions/status/deck.status.js"></script>
 <script src="vendor/deck.js/extensions/navigation/deck.navigation.js"></script>
 <script src="vendor/deck.js/extensions/scale/deck.scale.js"></script>
-<script src="vendor/deck.js/extensions/markdown/Markdown.Converter.js"></script>
-<script src="vendor/deck.js/extensions/markdown/deck.markdown.js"></script>
+<script src="vendor/marked.js"></script>
 <script src="vendor/highlight/highlight.pack.js"></script>
 
 <!-- Initialize the deck -->
 <script>
 $(function() {
+    marked.setOptions({
+      gfm: true,
+      tables: true,
+      breaks: false,
+      pedantic: false,
+      sanitize: true,
+      smartLists: true,
+      langPrefix: 'language-',
+      highlight: function(code, lang) {
+        return hljs.highlightAuto(code).value;
+      }
+    });
+    $('section.slide').each(function(i, e) {
+        $slide = $(this);
+        $slide.html(marked.parse($slide.text()));
+    });
     $.deck('.slide');
-    setTimeout(function() {
-        $('pre code').each(function(i, e) {
-            //e.innerHTML = e.textContent; // force plain text
-            hljs.highlightBlock(e);
-        });
-    }, 300);
 });
 </script>
 
