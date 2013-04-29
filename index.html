@@ -103,19 +103,23 @@
 <section class="slide" id="installation-osx">
 ## Installation (OSX)
 
-    $ brew install casperjs
-    $ casperjs --version
-    1.0.2
+```
+$ brew install casperjs
+$ casperjs --version
+1.0.2
+```
 </section>
 
 <section class="slide" id="installation-linux">
 ## Installation (Linux)
 
-    $ git clone https://github.com/n1k0/casperjs.git
-    $ cd casperjs
-    $ git co v1.0.2
-    $ casperjs --version
-    1.0.2
+```
+$ git clone https://github.com/n1k0/casperjs.git
+$ cd casperjs
+$ git co v1.0.2
+$ casperjs --version
+1.0.2
+```
 
 **Note:** des paquets sont disponibles pour archlinux et autres distributions
 </section>
@@ -160,16 +164,20 @@ CasperJS.
 
 Créer un fichier `exercices/1/1.js` :
 
-    // exercices/1/1.js
-    var casper = require('casper').create();
-    casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
-        this.debugHTML();
-    });
-    casper.run();
+```js
+// exercices/1/1.js
+var casper = require('casper').create();
+casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+    this.debugHTML();
+});
+casper.run();
+```
 
 Lancer le script :
 
-    $ casperjs exercices/1/1.js
+```
+$ casperjs exercices/1/1.js
+```
 </section>
 
 <section class="slide">
@@ -177,7 +185,9 @@ Lancer le script :
 
 On crée un object `casper` :
 
-    var casper = require('casper').create();
+```js
+var casper = require('casper').create();
+```
 
 *Notez l'utilisation du pattern module, comme dans node.js*
 </section>
@@ -187,7 +197,9 @@ On crée un object `casper` :
 
 On lance le navigateur sur l'url :
 
-    casper.start('http://fr.wikipedia.org/wiki/Scraping');
+```js
+casper.start('http://fr.wikipedia.org/wiki/Scraping');
+```
 
 *Considérez la méthode `start()` comme l'ouverture d'un nouvel onglet et le
 chargement d'une url dans un navigateur classique.*
@@ -199,9 +211,11 @@ chargement d'une url dans un navigateur classique.*
 On définit le comportement à la réception de la réponse HTTP attendue ; ici, on
 affiche simplement le contenu HTML brut de la page :
 
-    casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
-        this.debugHTML();
-    });
+```js
+casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+    this.debugHTML();
+});
+```
 
 *La méthode `debugHTML()` est très utile pour savoir exactement quel contenu
 HTML est utilisé dans la page courante.*
@@ -212,7 +226,9 @@ HTML est utilisé dans la page courante.*
 
 Enfin, on lance le traitement de l'ensemble des opérations programmées :
 
-    casper.run();
+```
+casper.run();
+```
 
 *Une erreur fréquente des débutants est d'omettre l'appel à `run()`, résultant sur
 un script figé.*
@@ -223,15 +239,17 @@ un script figé.*
 
 On pourrait aussi écrire :
 
-    var casper = require('casper').create();
+```js
+var casper = require('casper').create();
 
-    casper.start('http://fr.wikipedia.org/wiki/Scraping');
+casper.start('http://fr.wikipedia.org/wiki/Scraping');
 
-    casper.then(function() {
-        this.debugHTML();
-    });
+casper.then(function() {
+    this.debugHTML();
+});
 
-    casper.run();
+casper.run();
+```
 </section>
 
 <section class="slide">
@@ -239,13 +257,15 @@ On pourrait aussi écrire :
 
 Ou encore :
 
-    require('casper')
-        .create()
-        .start('http://fr.wikipedia.org/wiki/Scraping')
-        .then(function() {
-            this.debugHTML();
-        })
-        .run();
+```js
+require('casper')
+    .create()
+    .start('http://fr.wikipedia.org/wiki/Scraping')
+    .then(function() {
+        this.debugHTML();
+    })
+    .run();
+```
 
 Plus une affaire de goûts et de couleurs qu'autre chose…
 </section>
@@ -253,22 +273,24 @@ Plus une affaire de goûts et de couleurs qu'autre chose…
 <section class="slide code-small" id="">
 ## Extraction des liens
 
-    // exercices/1/2.js
-    var casper = require('casper').create();
-    var links = [];
+```js
+// exercices/1/2.js
+var casper = require('casper').create();
+var links = [];
 
-    casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
-        links = this.evaluate(function() {
-            var nodes = document.querySelectorAll('a');
-            return [].map.call(nodes, function(node) {
-                return node.getAttribute('href');
-            });
+casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+    links = this.evaluate(function() {
+        var nodes = document.querySelectorAll('a');
+        return [].map.call(nodes, function(node) {
+            return node.getAttribute('href');
         });
     });
+});
 
-    casper.run(function() {
-        this.echo(links).exit();
-    });
+casper.run(function() {
+    this.echo(links).exit();
+});
+```
 </section>
 
 <section class="slide" id="">
@@ -288,14 +310,15 @@ Une fois la page Wikipedia ouverte, nous appelons la méthode `evaluate()` depui
 le context casper afin de récupérer une valeur depuis le DOM de la page en
 question :
 
-    var links = [];
+```js
+var links = [];
 
-    casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
-        links = this.evaluate(function() {
-            // ce qui sera retourné ici sera affecté à la variable links
-        });
+casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+    links = this.evaluate(function() {
+        // ce qui sera retourné ici sera affecté à la variable links
     });
-
+});
+```
 </section>
 
 <section class="slide" id="">
@@ -305,13 +328,17 @@ Et que voulons-nous affecter à notre variable `links` ? La liste des liens
 hypertextes de la page courrante ; aussi nous commençons par récupérer la
 liste des éléments DOM correspondants :
 
-            var nodes = document.querySelectorAll('a');
+```js
+        var nodes = document.querySelectorAll('a');
+```
 
 Que nous mappons afin d'en extraire le contenu de l'attribut `href` :
 
-            return [].map.call(nodes, function(node) {
-                return node.getAttribute('href');
-            });
+```js
+        return [].map.call(nodes, function(node) {
+            return node.getAttribute('href');
+        });
+```
 
 **Note:** *Nous ne pouvons pas directement mapper la liste d'éléments car le type
 `NodeList` n'implémente pas complètement le prototype `Array` ; nous appliquons
@@ -325,9 +352,11 @@ donc directement la méthode `Array#map` à notre objet `NodeList` au moyen de
 Enfin, nous lançons l'exécution des opérations et affichons le contenu de notre
 variable `links` :
 
-    casper.run(function() {
-        this.echo(links).exit();
-    });
+```js
+casper.run(function() {
+    this.echo(links).exit();
+});
+```
 </section>
 
 <section class="slide" id="note-evaluate">
@@ -345,11 +374,11 @@ Comme [pour PhantomJS](https://github.com/ariya/phantomjs/wiki/Quick-Start#code-
 sérializables** de l'environnement JavaScript de la page à l'environnement
 d'exécution CasperJS.
 
-**Astuce :** considérez une valeur comme sérializable quand elle l'est au moyen
-de :
+**Astuce :** considérez une valeur comme sérializable lorsque l'expression
+suivante est vraie :
 
 ```js
-obj === JSON.parse(JSON.stringify(obj)) // true
+value === JSON.parse(JSON.stringify(value)) // true
 ```
 
 [Casper#evaluate()]: http://casperjs.org/api.html#casper.evaluate
@@ -360,15 +389,19 @@ obj === JSON.parse(JSON.stringify(obj)) // true
 
 Ceci fonctionnera :
 
-    var href = casper.evaluate(function() {
-        return document.querySelector('a').href; // String
-    });
+```js
+var href = casper.evaluate(function() {
+    return document.querySelector('a').href; // String
+});
+```
 
 Ceci ne fonctionnera pas :
 
-    var href = casper.evaluate(function() {
-        return document.querySelector('a'); // HTMLElement, non serializable
-    });
+```js
+var href = casper.evaluate(function() {
+    return document.querySelector('a'); // HTMLElement, non serializable
+});
+```
 </section>
 
 <section class="slide" id="">
@@ -396,16 +429,18 @@ Allons scraper tout ça pour rigoler un coup (ou pas)
 L'idée est de développer un script permettant, pour un terme de recherche passé,
 d'afficher la liste des suggestions correspondantes depuis la ligne de commande :
 
-    $ casperjs google-suggest.js pourquoi
-    pourquoi la guerre au mali
-    pourquoi pas coline
-    pourquoi je me suis marié
-    pourquoi le ciel est bleu
-    pourquoi la france intervient au mali
-    pourquoi je me suis marié aussi
-    pourquoi j'ai mangé mon père
-    pourquoi on baille
-    pourquoi le pape démissionne
+```
+$ casperjs google-suggest.js pourquoi
+pourquoi la guerre au mali
+pourquoi pas coline
+pourquoi je me suis marié
+pourquoi le ciel est bleu
+pourquoi la france intervient au mali
+pourquoi je me suis marié aussi
+pourquoi j'ai mangé mon père
+pourquoi on baille
+pourquoi le pape démissionne
+```
 </section>
 
 <section class="slide" id="">
@@ -439,8 +474,10 @@ Une fois l'objet `casper` créé, il dispose d'un attribut `cli` qui permet de
 récupérer les informations passés en ligne de commande ; ici, nous souhaitons
 récupérer le premier argument :
 
-    var casper = require('casper').create();
-    var word = casper.cli.get(0);
+```js
+var casper = require('casper').create();
+var word = casper.cli.get(0);
+```
 </section>
 
 <section class="slide" id="">
@@ -450,9 +487,11 @@ La méthode [Casper#sendKeys()] permet de simuler la saisie d'un texte sur un
 champ de formulaire ; Nous allons saisir le mot passé en argument du script dans
 la zone de recherche google :
 
-    casper.start('http://www.google.com/', function() {
-        this.sendKeys('input[name=q]', word);
-    });
+```js
+casper.start('http://www.google.com/', function() {
+    this.sendKeys('input[name=q]', word);
+});
+```
 
 [Casper#sendKeys()]: http://casperjs.org/api.html#casper.sendKeys
 </section>
@@ -465,12 +504,14 @@ la méthode [Casper#waitFor] afin d'attendre que le sélecteur correspondant
 existe et commence par le mot que nous recherchons ; ici, le sélecteur CSS3
 correspondant est `.gsq_a table span` :
 
-    casper.waitFor(function() {
-      return this.fetchText('.gsq_a table span').indexOf(word) === 0
-    }, function() {
-        // la boite d'autocomplétion est disponible
-        // récupération des suggestions
-    });
+```js
+casper.waitFor(function() {
+  return this.fetchText('.gsq_a table span').indexOf(word) === 0
+}, function() {
+    // la boite d'autocomplétion est disponible
+    // récupération des suggestions
+});
+```
 
 [Casper#waitFor]: http://casperjs.org/api.html#casper.waitFor
 </section>
@@ -481,12 +522,14 @@ correspondant est `.gsq_a table span` :
 Une fois la zone affichant les suggestions est visible, nous pouvons procéder à
 la récupération des textes pour chaque élément de la liste correspondante :
 
-        suggestions = this.evaluate(function() {
-            var nodes = document.querySelectorAll('.gsq_a table span');
-            return [].map.call(nodes, function(node){
-                return node.textContent;
-            });
+```js
+    suggestions = this.evaluate(function() {
+        var nodes = document.querySelectorAll('.gsq_a table span');
+        return [].map.call(nodes, function(node){
+            return node.textContent;
         });
+    });
+```
 </section>
 
 <section class="slide" id="">
@@ -494,9 +537,11 @@ la récupération des textes pour chaque élément de la liste correspondante :
 
 Enfin, nous affichons la liste des résultats que nous avons stocké :
 
-    casper.run(function() {
-        this.echo(suggestions.join('\n')).exit();
-    });
+```js
+casper.run(function() {
+    this.echo(suggestions.join('\n')).exit();
+});
+```
 </section>
 
 <section class="slide" id="tests-fonctionnels">
@@ -523,11 +568,13 @@ La documentation de la version de développement est située à l'adresse
 
 Installer la version 1.1 de développement :
 
-    $ git clone https://github.com/n1k0/casperjs.git
-    $ cd casperjs
-    $ git co master
-    $ casperjs --version
-    1.1.0-DEV
+```
+$ git clone https://github.com/n1k0/casperjs.git
+$ cd casperjs
+$ git co master
+$ casperjs --version
+1.1.0-DEV
+```
 </section>
 
 <section class="slide" id="">
@@ -536,7 +583,9 @@ Installer la version 1.1 de développement :
 L'utilisation des fonctionnalités de test implique l'utilisation d'une
 sous-commande particulière, `casperjs test` :
 
-    $ casperjs test mytest.js
+```
+$ casperjs test mytest.js
+```
 </section>
 
 <section class="slide code-smaller" id="">
@@ -544,29 +593,31 @@ sous-commande particulière, `casperjs test` :
 
 Testons la recherche google :
 
-    // exercices/3/1.js
-    casper.test.begin('Google search tests', 4, function suite(test) {
-        casper.start("http://www.google.fr/", function() {
-            test.assertTitle("Google", "google homepage title is the one expected");
-            test.assertExists('form[action="/search"]', "main form is found");
-            this.fill('form[action="/search"]', {
-                q: "casperjs"
-            }, true);
-        });
-
-        casper.waitFor(function() {
-            return this.getTitle() === "casperjs - Recherche Google";
-        }, function() {
-            test.assertUrlMatch(/q=casperjs/, "search term has been submitted");
-            test.assertEval(function() {
-                return document.querySelectorAll("h3.r").length >= 10;
-            }, "google search for \"casperjs\" retrieves 10 or more results");
-        });
-
-        casper.run(function() {
-            test.done();
-        });
+```js
+// exercices/3/1.js
+casper.test.begin('Google search tests', 4, function suite(test) {
+    casper.start("http://www.google.fr/", function() {
+        test.assertTitle("Google", "google homepage title is the one expected");
+        test.assertExists('form[action="/search"]', "main form is found");
+        this.fill('form[action="/search"]', {
+            q: "casperjs"
+        }, true);
     });
+
+    casper.waitFor(function() {
+        return this.getTitle() === "casperjs - Recherche Google";
+    }, function() {
+        test.assertUrlMatch(/q=casperjs/, "search term has been submitted");
+        test.assertEval(function() {
+            return document.querySelectorAll("h3.r").length >= 10;
+        }, "google search for \"casperjs\" retrieves 10 or more results");
+    });
+
+    casper.run(function() {
+        test.done();
+    });
+});
+```
 </section>
 
 <section class="slide" id="">
@@ -588,7 +639,9 @@ En faisant volontairement échouer le test :
 <section class="slide" id="">
 ## Que s'est-il passé ?
 
-    casper.test.begin('Google search tests', 4, function suite(test) {
+```js
+casper.test.begin('Google search tests', 4, function suite(test) {
+```
 
 Nous démarrons un nouveau test en spécifiant :
 
@@ -603,13 +656,15 @@ Nous démarrons un nouveau test en spécifiant :
 <section class="slide code-small" id="">
 ## Que s'est-il passé ?
 
-        casper.start("http://www.google.fr/", function() {
-            test.assertTitle("Google", "google homepage title is the one expected");
-            test.assertExists('form[action="/search"]', "main form is found");
-            this.fill('form[action="/search"]', {
-                q: "casperjs"
-            }, true);
-        });
+```js
+    casper.start("http://www.google.fr/", function() {
+        test.assertTitle("Google", "google homepage title is the one expected");
+        test.assertExists('form[action="/search"]', "main form is found");
+        this.fill('form[action="/search"]', {
+            q: "casperjs"
+        }, true);
+    });
+```
 
 Nous ouvrons la page d'accueil de Google, puis :
 
@@ -622,14 +677,16 @@ Nous ouvrons la page d'accueil de Google, puis :
 <section class="slide code-small" id="">
 ## Que s'est-il passé ?
 
-        casper.waitFor(function() {
-            return this.getTitle() === "casperjs - Recherche Google";
-        }, function() {
-            test.assertUrlMatch(/q=casperjs/, "search term has been submitted");
-            test.assertEval(function() {
-                return document.querySelectorAll("h3.r").length >= 10;
-            }, "google search for \"casperjs\" retrieves 10 or more results");
-        });
+```js
+    casper.waitFor(function() {
+        return this.getTitle() === "casperjs - Recherche Google";
+    }, function() {
+        test.assertUrlMatch(/q=casperjs/, "search term has been submitted");
+        test.assertEval(function() {
+            return document.querySelectorAll("h3.r").length >= 10;
+        }, "google search for \"casperjs\" retrieves 10 or more results");
+    });
+```
 
 Nous attendons que le titre de la page ait changé, puis nous vérifions :
 
@@ -640,9 +697,11 @@ Nous attendons que le titre de la page ait changé, puis nous vérifions :
 <section class="slide" id="">
 ## Que s'est-il passé ?
 
-        casper.run(function() {
-            test.done();
-        });
+```js
+    casper.run(function() {
+        test.done();
+    });
+```
 
 Enfin, nous executons l'ensemble des opérations définies et appelons la méthode
 [Tester#done()] afin de signifier que le test est terminé.
