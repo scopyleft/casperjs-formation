@@ -1,0 +1,35 @@
+.deck-container p code {
+    background: #dde;
+    padding: 0 .3em;
+    border-radius: .2em;
+}
+
+pre code {
+    background: none;
+}
+
+.code-small pre code {
+    font-size: 80%;
+}
+
+.code-smaller pre code {
+    font-size: 60%;
+}
+
+.deck-container .slide code {
+    color: #446;
+}
+
+.deck-container pre, .deck-container code, .deck-container kbd, .deck-container samp {
+    font-family: Consolas, Monaco, "Courrier New", monospace;
+}
+
+.deck-container footer {
+    position: fixed;
+    bottom: 10px;
+    color: #999;
+    font-size: .6em;
+}
+    .deck-container footer p {
+        text-align: center;
+    }
