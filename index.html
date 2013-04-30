@@ -138,6 +138,145 @@ Vous pouvez désormais utiliser la commande `casperjs.bat` :
 CasperJS.
 </section>
 
+<section class="slide" id="javascript">
+## Quelques rappels sur JavaScript
+
+```js
+>>> typeof null
+object
+>>> typeof "foo"
+"string"
+>>> typeof NaN
+"number"
+>>> typeof new Date()
+"object"
+>>> Object.prototype.toString.call(new Date())
+"[object Date]"
+```
+</section>
+
+<section class="slide" id="">
+## Quelques rappels sur JavaScript
+
+```js
+function Cow(name) {
+    this.name = name;
+}
+
+Cow.prototype.say = function(what) {
+    console.log(this.name + ' says ' + what);
+};
+
+var cow = new Cow('Geneviève');
+cow.say('Meuh.');
+```
+</section>
+
+<section class="slide" id="">
+## Quelques rappels sur JavaScript
+
+`Array#forEach`:
+
+```js
+[1, 2, 3].forEach(function(i) {
+    console.log(i);
+});
+// => 1
+// => 2
+// => 3
+```
+</section>
+
+<section class="slide" id="">
+## Quelques rappels sur JavaScript
+
+`Array#map`:
+
+```js
+[1, 2, 3].map(function(x) {
+    return x * 2;
+});
+// [2, 4, 6]
+```
+</section>
+
+<section class="slide" id="">
+## Quelques rappels sur JavaScript
+
+`Array#reduce`:
+
+```js
+[1, 2, 3].reduce(function(acc, x) {
+    return acc + x;
+});
+// 6
+```
+</section>
+
+<section class="slide" id="">
+## Quelques rappels sur JavaScript
+
+`Array#filter`:
+
+```js
+[1, 2, 3].filter(function(x) {
+    return x > 1 && x < 3;
+});
+// [2]
+```
+</section>
+
+<section class="slide" id="">
+## Quelques rappels sur JavaScript
+
+`Arguments`:
+
+```js
+function adder() {
+    return [].slice.call(arguments).reduce(function(acc, x) {
+        return acc + x;
+    });
+}
+
+adder(1, 2)    // 3
+adder(1, 2, 3) // 6
+```
+</section>
+
+<section class="slide" id="">
+## Quelques rappels sur JavaScript
+
+`Function#apply`:
+
+```js
+function adder() {
+    return [].slice.call(arguments).reduce(function(acc, x) {
+        return acc + x;
+    });
+}
+
+adder.apply(null, [1, 2])
+adder.apply(null, [1, 2, 3])
+```
+</section>
+
+<section class="slide" id="">
+## Quelques rappels sur JavaScript
+
+`Function#call`:
+
+```js
+function adder() {
+    return this.reduce(function(acc, x) {
+        return acc + x;
+    });
+}
+
+adder.call([1, 2])
+adder.call([1, 2, 3])
+```
+</section>
+
 <section class="slide" id="scraping">
 # Scraping
 </section>
@@ -147,8 +286,7 @@ CasperJS.
 
 > Le Web scraping (parfois appelé Harvesting) est une technique d'extraction
 > du contenu de sites Web, via un script ou un programme, dans le but de le
-> transformer pour permettre son utilisation dans un autre contexte, par
-> exemple le référencement
+> transformer pour permettre son utilisation dans un autre contexte
 
 — [Wikipedia](http://fr.wikipedia.org/wiki/Scraping)
 </section>
@@ -551,8 +689,10 @@ casper.run(function() {
 <section class="slide" id="">
 ## Tests fonctionnels
 
-- utiles pour garantir l'intégrité fonctionnelle d'une application
-- utiles pour valider un comportement attendu
+Utiles pour :
+
+- garantir l'intégrité fonctionnelle d'une application
+- valider un comportement attendu
 - garantir contre les régressions éventuelles
 
 Le framework de test fonctionnel a été refondu en version 1.1, et propose
