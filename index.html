@@ -233,7 +233,7 @@ cow.say('Meuh.');
 
 ```js
 function adder() {
-    return [].slice.call(arguments).reduce(function(acc, x) {
+    return [].reduce.call(arguments, function(acc, x) {
         return acc + x;
     });
 }
@@ -250,7 +250,7 @@ adder(1, 2, 3) // 6
 
 ```js
 function adder() {
-    return [].slice.call(arguments).reduce(function(acc, x) {
+    return [].reduce.call(arguments, function(acc, x) {
         return acc + x;
     });
 }
