@@ -113,10 +113,21 @@ $ casperjs --version
 <section class="slide" id="installation-linux">
 ## Installation (Linux)
 
+PhantomJS:
+
+```
+$ npm install -g phantomjs
+```
+
+CasperJS:
+
+Ajoutez `/usr/local/bin/` dans votre variable `$PATH`, puis :
+
 ```
 $ git clone https://github.com/n1k0/casperjs.git
 $ cd casperjs
-$ git co v1.0.2
+$ ln -sf `pwd`/bin/capserjs /usr/local/bin/casperjs
+$ git co 1.0.2
 $ casperjs --version
 1.0.2
 ```
@@ -277,6 +288,163 @@ adder.call([1, 2, 3])
 ```
 </section>
 
+<section class="slide" id="rappels-dom">
+# Rappels sur le DOM
+</section>
+
+<section class="slide" id="">
+## `document.querySelector`
+
+```js
+>>> typeof document.querySelector('body')
+
+
+>>> document.querySelector('body') instanceof HTMLBodyElement
+
+
+>>> document.querySelector('body') instanceof HTMLElement
+
+
+>>> document.querySelector('#nonexistent')
+
+
+>>> typeof document.querySelector('#nonexistent')
+
+```
+</section>
+
+<section class="slide" id="">
+## `document.querySelector`
+
+```js
+>>> typeof document.querySelector('body')
+"object"
+
+>>> document.querySelector('body') instanceof HTMLBodyElement
+true
+
+>>> document.querySelector('body') instanceof HTMLElement
+true
+
+>>> document.querySelector('#nonexistent')
+null
+
+>>> typeof document.querySelector('#nonexistent')
+"object"
+```
+
+C'est rigolo, hein?
+</section>
+
+<section class="slide" id="">
+## `document.querySelectorAll`
+
+```js
+>>> typeof document.querySelectorAll('a')
+
+
+>>> document.querySelectorAll('a') instanceof HTMLElement
+
+
+>>> document.querySelectorAll('a') instanceof NodeList
+
+
+>>> document.querySelectorAll('a')[0] instanceof HTMLElement
+
+
+>>> document.querySelectorAll('a') instanceof Array
+
+```
+</section>
+
+<section class="slide" id="">
+## `document.querySelectorAll`
+
+```js
+>>> typeof document.querySelectorAll('a')
+"object"
+
+>>> document.querySelectorAll('a') instanceof HTMLElement
+false
+
+>>> document.querySelectorAll('a') instanceof NodeList
+true
+
+>>> document.querySelectorAll('a')[0] instanceof HTMLElement
+true
+
+>>> document.querySelectorAll('a') instanceof Array
+false
+```
+
+Moi je trouve ça rigolo.
+</section>
+
+<section class="slide" id="">
+## `NodeList`
+
+```js
+>>> document.body.innerHTML = '&lt;ul&gt;&lt;li&gt;1&lt;/li&gt;&lt;li&gt;2&lt;/li&gt;&lt;li&gt;3&lt;/li&gt;&lt;/ul&gt;'
+```
+
+```js
+>>> document.querySelectorAll('li').length
+?
+```
+
+```js
+>>> document.querySelectorAll('li').map(function(node) {
+>>>     return parseInt(node.textContent, 10);
+>>> })
+?
+```
+</section>
+
+<section class="slide" id="">
+## `NodeList`
+
+```js
+>>> document.body.innerHTML = '&lt;ul&gt;&lt;li&gt;1&lt;/li&gt;&lt;li&gt;2&lt;/li&gt;&lt;li&gt;3&lt;/li&gt;&lt;/ul&gt;'
+```
+
+```js
+>>> document.querySelectorAll('li').length
+3
+```
+
+```js
+>>> document.querySelectorAll('li').map(function(node) {
+>>>     return parseInt(node.textContent, 10);
+>>> })
+TypeError: document.querySelectorAll(...).map is not a function
+```
+
+C'est vrai qu'on rigole bien.
+</section>
+
+<section class="slide" id="">
+## `NodeList`
+
+La solution, utiliser la fonction prototypale `Array#map` en lui passant le
+contexte approprié :
+
+```js
+>>> Array.prototype.map.call(document.querySelectorAll('li'), function(node) {
+>>>     return parseInt(node.textContent, 10);
+>>> })
+[1, 2, 3]
+```
+
+Ou encore :
+
+```js
+>>> [].map.call(document.querySelectorAll('li'), function(node) {
+>>>     return parseInt(node.textContent, 10);
+>>> })
+[1, 2, 3]
+```
+</section>
+
 <section class="slide" id="scraping">
 # Scraping
 </section>
@@ -288,13 +456,13 @@ adder.call([1, 2, 3])
 > du contenu de sites Web, via un script ou un programme, dans le but de le
 > transformer pour permettre son utilisation dans un autre contexte
 
-— [Wikipedia](http://fr.wikipedia.org/wiki/Scraping)
+— [Wikipedia](http://fr.wikipedia.org/wiki/Web_scraping)
 </section>
 
 <section class="slide" id="scraping-ex-1">
 ## Scraping: exemple 1
 
-**Extraire tous les liens depuis la page [fr.wikipedia.org/wiki/Scraping](http://fr.wikipedia.org/wiki/Scraping).**
+**Extraire tous les liens depuis la page [fr.wikipedia.org/wiki/Web_Scraping](http://fr.wikipedia.org/wiki/Web_scraping).**
 </section>
 
 <section class="slide">
@@ -305,7 +473,7 @@ Créer un fichier `exercices/1/1.js` :
 ```js
 // exercices/1/1.js
 var casper = require('casper').create();
-casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+casper.start('http://fr.wikipedia.org/wiki/Web_scraping', function() {
     this.debugHTML();
 });
 casper.run();
@@ -336,7 +504,7 @@ var casper = require('casper').create();
 On lance le navigateur sur l'url :
 
 ```js
-casper.start('http://fr.wikipedia.org/wiki/Scraping');
+casper.start('http://fr.wikipedia.org/wiki/Web_scraping');
 ```
 
 *Considérez la méthode `start()` comme l'ouverture d'un nouvel onglet et le
@@ -350,7 +518,7 @@ On définit le comportement à la réception de la réponse HTTP attendue ; ici
 affiche simplement le contenu HTML brut de la page :
 
 ```js
-casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+casper.start('http://fr.wikipedia.org/wiki/Web_scraping', function() {
     this.debugHTML();
 });
 ```
@@ -380,7 +548,7 @@ On pourrait aussi écrire :
 ```js
 var casper = require('casper').create();
 
-casper.start('http://fr.wikipedia.org/wiki/Scraping');
+casper.start('http://fr.wikipedia.org/wiki/Web_scraping');
 
 casper.then(function() {
     this.debugHTML();
@@ -398,7 +566,7 @@ Ou encore :
 ```js
 require('casper')
     .create()
-    .start('http://fr.wikipedia.org/wiki/Scraping')
+    .start('http://fr.wikipedia.org/wiki/Web_scraping')
     .then(function() {
         this.debugHTML();
     })
@@ -416,7 +584,7 @@ Plus une affaire de goûts et de couleurs qu'autre chose…
 var casper = require('casper').create();
 var links = [];
 
-casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+casper.start('http://fr.wikipedia.org/wiki/Web_scraping', function() {
     links = this.evaluate(function() {
         var nodes = document.querySelectorAll('a');
         return [].map.call(nodes, function(node) {
@@ -451,7 +619,7 @@ question :
 ```js
 var links = [];
 
-casper.start('http://fr.wikipedia.org/wiki/Scraping', function() {
+casper.start('http://fr.wikipedia.org/wiki/Web_scraping', function() {
     links = this.evaluate(function() {
         // ce qui sera retourné ici sera affecté à la variable links
     });
