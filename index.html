@@ -103,27 +103,30 @@
 <section class="slide" id="installation-osx">
 ## Installation (OSX)
 
+Utiliser [Homebrew], un gestionnaire de paquet pour OS X, est la solution la plus
+simple :
+
 ```
+$ ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+$ brew update
 $ brew install casperjs
 $ casperjs --version
 1.0.2
 ```
+
+**Note :** PhantomJS sera alors installé en tant que dépendance.
+
+[Homebrew]: http://mxcl.github.io/homebrew/
 </section>
 
 <section class="slide" id="installation-linux">
 ## Installation (Linux)
 
-PhantomJS:
+PhantomJS s'installe facilement via [npm], tandis que CasperJS s'installera via
+`git`:
 
 ```
 $ npm install -g phantomjs
-```
-
-CasperJS:
-
-Ajoutez `/usr/local/bin/` dans votre variable `$PATH`, puis :
-
-```
 $ git clone https://github.com/n1k0/casperjs.git
 $ cd casperjs
 $ ln -sf `pwd`/bin/capserjs /usr/local/bin/casperjs
@@ -132,61 +135,123 @@ $ casperjs --version
 1.0.2
 ```
 
-**Note:** des paquets sont disponibles pour archlinux et autres distributions
+[npm]: https://npmjs.org/
 </section>
 
 <section class="slide" id="installation-windows">
 ## Installation (Windows)
 
 - Téléchargez la version stable sur github
+- Décompressez l'archive vers `C:\casperjs`
 - Ajoutez `;C:\casperjs\batchbin` à votre variable d'environnement `PATH`
 
 Vous pouvez désormais utiliser la commande `casperjs.bat` :
 
     C:> casperjs.bat myscript.js
 
-**Note:** le support de Windows est assuré par la communauté de contributeurs
-CasperJS.
+**Notes :**
+
+- le support de Windows est assuré par la communauté de contributeurs CasperJS
+- il est recommandé d'utiliser CasperJS dans un environnement *n*x
+
 </section>
 
 <section class="slide" id="javascript">
+# Quelques rappels sur JavaScript
+</section>
+
+<section class="slide" id="">
+## Quelques rappels sur JavaScript
+
+```js
+>>> typeof null
+???
+
+>>> typeof "foo"
+???
+
+>>> typeof NaN
+???
+
+>>> typeof new Date()
+???
+
+>>> Object.prototype.toString.call(new Date())
+???
+```
+</section>
+
+<section class="slide" id="">
 ## Quelques rappels sur JavaScript
 
 ```js
 >>> typeof null
 object
+
 >>> typeof "foo"
 "string"
+
 >>> typeof NaN
 "number"
+
 >>> typeof new Date()
 "object"
+
 >>> Object.prototype.toString.call(new Date())
 "[object Date]"
 ```
 </section>
 
 <section class="slide" id="">
-## Quelques rappels sur JavaScript
+## Prototype
 
 ```js
-function Cow(name) {
-    this.name = name;
-}
+>>> function Cow(name) {
+        this.name = name;
+    }
 
-Cow.prototype.say = function(what) {
-    console.log(this.name + ' says ' + what);
-};
+>>> Cow.prototype.say = function(what) {
+        console.log(this.name + ' says ' + what);
+    };
 
-var cow = new Cow('Geneviève');
-cow.say('Meuh.');
+>>> var cow = new Cow('Geneviève');
+>>> cow.say('Meuh.');
+// => "Geneviève says Meuh."
 ```
 </section>
 
 <section class="slide" id="">
-## Quelques rappels sur JavaScript
+## Sérialisation
 
-`Array#forEach`:
+```js
+>>> var cow = new Cow('Geneviève');
+[Object object]
+
+>>> cow = JSON.parse(JSON.stringify(cow));
+[Object object]
+
+>>> cow.says('Halp.');
+???
+```
+</section>
+
+<section class="slide" id="">
+## Sérialisation
+
+```js
+>>> var cow = new Cow('Geneviève');
+[Object object]
+
+>>> cow = JSON.parse(JSON.stringify(cow));
+[Object object]
+
+>>> cow.says('Halp.');
+TypeError: cow.says is not a function
+```
+</section>
+
+<section class="slide" id="">
+## `Array#forEach`
 
 ```js
 [1, 2, 3].forEach(function(i) {
@@ -199,9 +264,7 @@ cow.say('Meuh.');
 </section>
 
 <section class="slide" id="">
-## Quelques rappels sur JavaScript
-
-`Array#map`:
+## `Array#map`
 
 ```js
 [1, 2, 3].map(function(x) {
@@ -212,9 +275,7 @@ cow.say('Meuh.');
 </section>
 
 <section class="slide" id="">
-## Quelques rappels sur JavaScript
-
-`Array#reduce`:
+## `Array#reduce`
 
 ```js
 [1, 2, 3].reduce(function(acc, x) {
@@ -225,9 +286,7 @@ cow.say('Meuh.');
 </section>
 
 <section class="slide" id="">
-## Quelques rappels sur JavaScript
-
-`Array#filter`:
+## `Array#filter`
 
 ```js
 [1, 2, 3].filter(function(x) {
@@ -238,9 +297,7 @@ cow.say('Meuh.');
 </section>
 
 <section class="slide" id="">
-## Quelques rappels sur JavaScript
-
-`Arguments`:
+## `Arguments`
 
 ```js
 function adder() {
@@ -255,9 +312,7 @@ adder(1, 2, 3) // 6
 </section>
 
 <section class="slide" id="">
-## Quelques rappels sur JavaScript
-
-`Function#apply`:
+## `Function#apply`
 
 ```js
 function adder() {
@@ -272,9 +327,7 @@ adder.apply(null, [1, 2, 3])
 </section>
 
 <section class="slide" id="">
-## Quelques rappels sur JavaScript
-
-`Function#call`:
+## `Function#call`
 
 ```js
 function adder() {
@@ -285,6 +338,26 @@ function adder() {
 
 adder.call([1, 2])
 adder.call([1, 2, 3])
+```
+</section>
+
+<section class="slide" id="">
+## `Function#bind`
+
+```js
+function test() {
+    "use strict";
+    console.log(this, JSON.stringify(arguments));
+}
+
+>>> test();
+undefined '{}'
+
+>>> test.bind("foo")();
+foo {}
+
+>>> test.bind("foo", 1, 2)();
+foo {"0":1,"1":2}
 ```
 </section>
 
