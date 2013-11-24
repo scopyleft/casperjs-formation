@@ -156,6 +156,58 @@ Vous pouvez désormais utiliser la commande `casperjs.exe` :
 
 </section>
 
+<section class="slide" id="premier-script">
+## Premier script
+
+Dans un nouveau fichier `casper-commits.js` :
+
+```js
+require("casper").create({pageSettings: {loadImages: false, loadPlugins: false}})
+  .start("https://github.com/n1k0", function() {this.clickLabel("casperjs")})
+  .waitForSelector(".commits a").thenClick(".commits a")
+  .waitForSelector(".commit-group-heading").run(function() {
+    this.echo("Latest commits from CasperJS:\n\n" + this.evaluate(function() {
+      var nodes = document.querySelectorAll('.commit-title');
+      return [].map.call(nodes, function(node) {
+        return node.textContent.replace("…", "").trim();
+      });
+    }).map(function(c) {
+      return "- " + c;
+    }).join("\n")).exit();
+  });
+
+```
+</section>
+
+<section class="slide" id="">
+## Cela nous donne
+
+```
+$ casperjs casper-commits.js
+Latest commits from CasperJS:
+
+- fixed jshint issue
+- updated obsolete doclinks in README
+- fixes #704 - added --auto-exit=no test runner option
+- added missing test file - refs #721
+- refs #546 - even better 1.1 strategy for storing successes/failures
+- fixes #704 - provide an 'exit' tester event to hook before runner exits
+- refs #546 - documented fallback strategies for getPasses/getFailures
+- fixes #546 - updated 1.1 upgrade docs regarding getPasses/getFailures
+- minor docs fixes for clientutils
+- Merge pull request #718 from phillipalexander/fix-readme-typo
+…
+```
+</section>
+
+<section class="slide html" id="">
+    <h2>Des questions ?</h2>
+
+    <p class="slide">(Oui, c'était une blague.)</p>
+    <p class="slide">(Mais à la fin vous pourrez produire vous-même ce genre de scripts)</p>
+    <p class="slide">(En plus beaux)</p>
+</section>
+
 <section class="slide" id="javascript">
 # Quelques rappels sur JavaScript
 </section>
@@ -1398,7 +1450,7 @@ $(function() {
         return hljs.highlightAuto(code).value;
       }
     });
-    $('section.slide').each(function(i, e) {
+    $('section.slide:not(".html")').each(function(i, e) {
         $slide = $(this);
         $slide.html(marked.parse($slide.text()));
     });
