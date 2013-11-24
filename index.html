@@ -109,9 +109,9 @@ simple :
 ```
 $ ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 $ brew update
-$ brew install casperjs
+$ brew install casperjs --devel
 $ casperjs --version
-1.0.2
+1.1-beta2
 ```
 
 **Note :** PhantomJS sera alors installé en tant que dépendance.
@@ -130,9 +130,9 @@ $ npm install -g phantomjs
 $ git clone https://github.com/n1k0/casperjs.git
 $ cd casperjs
 $ ln -sf `pwd`/bin/capserjs /usr/local/bin/casperjs
-$ git co 1.0.2
+$ git co 1.1-beta2
 $ casperjs --version
-1.0.2
+1.1-beta2
 ```
 
 [npm]: https://npmjs.org/
@@ -143,11 +143,11 @@ $ casperjs --version
 
 - Téléchargez la version stable sur github
 - Décompressez l'archive vers `C:\casperjs`
-- Ajoutez `;C:\casperjs\batchbin` à votre variable d'environnement `PATH`
+- Ajoutez `;C:\casperjs\bin` à votre variable d'environnement `PATH`
 
-Vous pouvez désormais utiliser la commande `casperjs.bat` :
+Vous pouvez désormais utiliser la commande `casperjs.exe` :
 
-    C:> casperjs.bat myscript.js
+    C:> casperjs.exe myscript.js
 
 **Notes :**
 
@@ -160,14 +160,180 @@ Vous pouvez désormais utiliser la commande `casperjs.bat` :
 # Quelques rappels sur JavaScript
 </section>
 
-<section class="slide" id="">
-## Quelques rappels sur JavaScript
+<section class="slide" id="javascript-scope">
+## Scope
 
 ```js
->>> typeof null
+function hello() {
+    var target = "world";
+    return "hello, " + target;
+}
+console.log(hello()) // "hello, world"
+console.log(target)  // ReferenceError: target is not defined
+```
+</section>
+
+<section class="slide" id="">
+## Scope
+
+```js
+function hello() {
+    target = "world";
+    return "hello, " + target;
+}
+console.log(hello()) // "hello, world"
+console.log(target)  // "world"
+```
+
+Ici, l'absence d'utilisation du mot-clé `var` stocke `target` dans le scope
+global, c'est à dire attache la propriété `target` à l'objet `window`.
+</section>
+
+<section class="slide" id="">
+## Scope
+
+```js
+function hello() {
+    "use strict";
+    target = "world";
+    return "hello, " + target;
+}
+console.log(hello()) // ReferenceError: assignment to undeclared variable target
+console.log(target)
+```
+
+La directive `"use strict"` effectue une vérification stricte du contexte dans
+lequel nous déclarons nos variables. Utilisez-la aussi souvent que possible!
+</section>
+
+<section class="slide" id="">
+## Scope
+
+```js
+function hello(target) {
+    function capitalize() {
+        return target.toUpperCase();
+    }
+    return "hello, " + capitalize();
+}
+console.log(hello("chuck")) // "hello, CHUCK"
+```
+
+Un fonction imbriquée accède au scope de sa fonction parente.
+</section>
+
+<section class="slide" id="">
+## Scope
+
+```js
+function hello(target) {
+    function capitalize() {
+        target = target.toUpperCase();
+    }
+    capitalize();
+    return "hello, " + target;
+}
+console.log(hello("chuck")) // "hello, CHUCK"
+```
+
+Une fonction imbriquée peut altérer une variable du scope parent, mais cette
+pratique est vivement déconseillée, car ce type d'effets de bords sont toujours
+plus difficiles à contrôler et à tester.
+</section>
+
+<section class="slide" id="javascript-closures">
+## Closures
+
+```js
+function add(x) {
+    return function(y) {
+        return x + y;
+    };
+}
+var add5 = add(5);
+console.log(add5(3));   // 8
+console.log(add(5)(3)); // 8
+```
+
+Une closure est une fonction qui effectue des opérations sur ou à partir des
+éléments de son scope parent. Ici, la fonction `add` prend un argument `x` et
+retourne elle-même une autre fonction prenant un paramètre `y` qui sera ajouté
+à `x`.
+
+L'aspirine est dans le petit placard blanc de la salle de bain.
+</section>
+
+<section class="slide" id="">
+## Closures
+
+```js
+var functions = [];
+for (var i = 0; i < 10; i++) {
+    functions.push(function() {
+        console.log(i);
+    });
+}
+
+functions.forEach(function(fn) {
+    fn();
+});
+```
+
+Cela affiche dix fois le nombre `10`. Que s'est-il passé ?
+</section>
+
+<section class="slide" id="">
+## Closures
+
+```js
+var functions = [];
+for (var i = 0; i < 10; i++) {
+    functions.push(function(i) {
+        return function() {
+            console.log(i);
+        };
+    }(i));
+}
+
+functions.forEach(function(fn) {
+    fn();
+});
+```
+
+Grace à une closure, nous avons isolé la valeur de `i` utilisée par chacune des
+fonctions de notre tableau de fonctions.
+</section>
+
+<section class="slide" id="">
+## IIFE
+
+```js
+var functions = [];
+for (var i = 0; i < 10; i++) {
+    (function(i) {
+        functions.push(function() {
+            console.log(i);
+        });
+    })(i);
+}
+
+functions.forEach(function(fn) {
+    fn();
+})
+```
+
+Ici nous utilisons une IIFE — Immediately Invoked Function Expression — qui
+aboutit au même résultat.
+</section>
+
+<section class="slide" id="javascript-types">
+## Types
+
+```js
+>>> typeof "foo"
 ???
 
->>> typeof "foo"
+>>> typeof null
 ???
 
 >>> typeof NaN
@@ -182,14 +348,14 @@ Vous pouvez désormais utiliser la commande `casperjs.bat` :
 </section>
 
 <section class="slide" id="">
-## Quelques rappels sur JavaScript
+## Types
 
 ```js
->>> typeof null
-object
-
 >>> typeof "foo"
 "string"
+
+>>> typeof null
+object
 
 >>> typeof NaN
 "number"
@@ -248,6 +414,9 @@ object
 >>> cow.says('Halp.');
 TypeError: cow.says is not a function
 ```
+
+Un objet cloné de cette façon renverra toujours un objet natif dépossédé de
+toutes les méthodes que vous y avez ajouté.
 </section>
 
 <section class="slide" id="">
@@ -370,19 +539,19 @@ foo {"0":1,"1":2}
 
 ```js
 >>> typeof document.querySelector('body')
-
+???
 
 >>> document.querySelector('body') instanceof HTMLBodyElement
-
+???
 
 >>> document.querySelector('body') instanceof HTMLElement
-
+???
 
 >>> document.querySelector('#nonexistent')
-
+???
 
 >>> typeof document.querySelector('#nonexistent')
-
+???
 ```
 </section>
 
@@ -405,8 +574,6 @@ null
 >>> typeof document.querySelector('#nonexistent')
 "object"
 ```
-
-C'est rigolo, hein?
 </section>
 
 <section class="slide" id="">
@@ -414,19 +581,19 @@ C'est rigolo, hein?
 
 ```js
 >>> typeof document.querySelectorAll('a')
-
+???
 
 >>> document.querySelectorAll('a') instanceof HTMLElement
-
+???
 
 >>> document.querySelectorAll('a') instanceof NodeList
-
+???
 
 >>> document.querySelectorAll('a')[0] instanceof HTMLElement
-
+???
 
 >>> document.querySelectorAll('a') instanceof Array
-
+???
 ```
 </section>
 
@@ -449,8 +616,6 @@ true
 >>> document.querySelectorAll('a') instanceof Array
 false
 ```
-
-Moi je trouve ça rigolo.
 </section>
 
 <section class="slide" id="">
@@ -462,14 +627,14 @@ Moi je trouve ça rigolo.
 
 ```js
 >>> document.querySelectorAll('li').length
-?
+???
 ```
 
 ```js
 >>> document.querySelectorAll('li').map(function(node) {
 >>>     return parseInt(node.textContent, 10);
 >>> })
-?
+???
 ```
 </section>
 
@@ -491,8 +656,6 @@ Moi je trouve ça rigolo.
 >>> })
 TypeError: document.querySelectorAll(...).map is not a function
 ```
-
-C'est vrai qu'on rigole bien.
 </section>
 
 <section class="slide" id="">
@@ -535,7 +698,8 @@ Ou encore :
 <section class="slide" id="scraping-ex-1">
 ## Scraping: exemple 1
 
-**Extraire tous les liens depuis la page [fr.wikipedia.org/wiki/Web_Scraping](http://fr.wikipedia.org/wiki/Web_scraping).**
+**Extraire tous les liens depuis la page
+[fr.wikipedia.org/wiki/Web_Scraping](http://fr.wikipedia.org/wiki/Web_scraping).**
 </section>
 
 <section class="slide">
@@ -789,6 +953,29 @@ var href = casper.evaluate(function() {
 Ce diagramme illustre le principe d'étanchéïté entre les deux environnements :
 
 ![](img/evaluate-diagram.png)
+</section>
+
+<section class="slide" id="">
+## Notes sur `Casper#evaluate()`
+
+Une fonction passée à `evaluate()` n'a pas accès au scope de l'environnement
+CasperJS ; ceci ne fonctionnera pas :
+
+```js
+var toto = 42;
+this.echo(this.evaluate(function() {
+    return toto; // undefined
+}));
+```
+
+On peut cependant passer des arguments inline à `evaluate()` :
+
+```js
+var toto = 42;
+this.echo(this.evaluate(function(toto) {
+    return toto; // 42
+}, toto));
+```
 </section>
 
 <section class="slide" id="">
