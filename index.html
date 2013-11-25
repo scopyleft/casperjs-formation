@@ -184,9 +184,7 @@ require("casper").create({pageSettings: {loadImages: false, loadPlugins: false}}
       return [].map.call(nodes, function(node) {
         return node.textContent.replace("…", "").trim();
       });
-    }).map(function(c) {
-      return "- " + c;
-    }).join("\n")).exit();
+    }).join("\n - ")).exit();
   });
 
 ```
@@ -216,9 +214,9 @@ Latest commits from CasperJS:
 <section class="slide html" id="">
     <h2>Des questions ?</h2>
 
-    <p class="slide">(Oui, c'était une blague.)</p>
-    <p class="slide">(Mais à la fin vous pourrez produire vous-même ce genre de scripts)</p>
-    <p class="slide">(En plus beaux)</p>
+    <p class="slide">Oui, c'était une blague.</p>
+    <p class="slide">Mais à la fin vous pourrez produire vous-même ce genre de script</p>
+    <p class="slide">(En beaucoup plus beau)</p>
 </section>
 
 <section class="slide" id="javascript">
