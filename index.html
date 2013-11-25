@@ -251,7 +251,7 @@ function hello() {
     return "hello, " + target;
 }
 console.log(hello()) // ReferenceError: assignment to undeclared variable target
-console.log(target)
+console.log(target)  // undefined
 ```
 
 La directive `"use strict"` effectue une vérification stricte du contexte dans
@@ -269,9 +269,11 @@ function hello(target) {
     return "hello, " + capitalize();
 }
 console.log(hello("chuck")) // "hello, CHUCK"
+console.log(target)         // undefined
 ```
 
-Un fonction imbriquée accède au scope de sa fonction parente.
+Un fonction imbriquée accède au scope de sa fonction parente. Les arguments
+reçus par une fonction ne sont pas exposés hors de son scope.
 </section>
 
 <section class="slide" id="">
