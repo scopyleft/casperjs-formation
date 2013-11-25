@@ -42,12 +42,15 @@
 ## CasperJS
 
 - navigateur headless
-- basé sur [PhantomJS]
-- moteur [WebKit] ([QtWebKit])
-- moteur JavaScript Qt
+- basé sur
+  * [PhantomJS] — moteur [WebKit] ([QtWebKit])
+  * [SlimerJS] - moteur [Gecko] plus récent
+- moteur JavaScript Qt (JavaScriptCore)
 
 [PhantomJS]: http://phantomjs.org/
+[SlimerJS]: http://slimerjs.org/
 [WebKit]: http://webkit.org/
+[Gecko]: http://fr.wikipedia.org/wiki/Gecko_%28moteur_de_rendu%29
 [QtWebKit]: https://qt-project.org/wiki/QtWebKit
 </section>
 
@@ -64,8 +67,8 @@
 - récupérer des informations depuis des pages web
 - difficultés:
   * pages et webapps utilisant massivement JavaScript
-  * navigation et interactions
   * automatisation
+  * **navigation et interactions**
 </section>
 
 <section class="slide" id="tests-fonctionnels-enjeux">
@@ -74,26 +77,35 @@
 - tester la conformité du comportement d'une application Web
 - difficultés:
   * pages et webapps utilisant massivement JavaScript
-  * navigation et interactions
   * automatisation
+  * **navigation et interactions**
 </section>
 
 <section class="slide no-md" id="casperjs-definition">
 ## CasperJS
 
-> permet de scripter des scenarios automatisés de navigation et d'interaction
-> avec des applications Web utilisant massivement JavaScript
+> CasperJS permet de scripter des scenarios automatisés de navigation et
+> d'interaction avec des applications Web utilisant massivement JavaScript.
 
 </section>
 
 <section class="slide" id="confusions-frequentes">
 ## Confusions fréquentes
 
-- CasperJS n'est **pas** un package node.js
-- PhantomJS (et QtWebkit) n'utilisent **pas** le moteur V8 de Google, mais
+- **CasperJS n'est pas un package NodeJS**
+- [PhantomJS] (et QtWebkit) n'utilisent **pas** le moteur V8 de Google, mais
   [JavaScriptCore], le moteur natif de WebKit
+  * les versions de WebKit et JavaScriptCore utilisées par PhantomJS sont
+    vieillissantes
+- [SlimerJS] utilise lui le moteur JavaScript plus actuel des versions récentes
+  de Firefox
+  * SlimerJS n'est pas *headless*, il utilise [Xvfb] pour émuler un buffer
+    graphique (il est par conséquent un peu plus lent que PhantomJS)
 
+[PhantomJS]: http://phantomjs.org/
+[SlimerJS]: http://slimerjs.org/
 [JavaScriptCore]: http://trac.webkit.org/wiki/JavaScriptCore
+[Xvfb]: http://en.wikipedia.org/wiki/Xvfb
 </section>
 
 <section class="slide" id="installation">
