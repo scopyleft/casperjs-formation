@@ -1,27 +1,23 @@
 /*global casper:true*/
-var casper = require('casper').create();
-var suggestions = [];
+var casper = require('casper').create({
+  pageSettings: {
+    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:28.0) Gecko/20100101 Firefox/28.0"
+  }
+});
+
 var word = casper.cli.get(0);
 
-if (!word) {
-    casper.echo('please provide a word').exit(1);
-}
-
-casper.start('http://www.google.com/', function() {
-    this.sendKeys('input[name=q]', word);
+casper.start("http://google.com/", function() {
+  this.sendKeys("input[name=q]", word);
 });
 
 casper.waitFor(function() {
-  return this.fetchText('.gsq_a table span').indexOf(word) === 0
-}, function() {
-  suggestions = this.evaluate(function() {
-      var nodes = document.querySelectorAll('.gsq_a table span');
-      return [].map.call(nodes, function(node){
-          return node.textContent;
-      });
-  });
+  return this.fetchText(".gsq_a table span").length > 0
 });
 
 casper.run(function() {
-  this.echo(suggestions.join('\n')).exit();
+  var lines = this.getElementsInfo(".gsq_a table span").map(function(s) {
+    return s.text.trim();
+  });
+  this.echo('\n- ' + lines.join('\n- ')).exit();
 });
